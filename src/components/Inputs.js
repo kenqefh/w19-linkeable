@@ -73,7 +73,7 @@ const Caption = styled.span(
   `
 );
 
-function InputText({
+function Input({
   label = "",
   caption = "",
   icon,
@@ -81,6 +81,7 @@ function InputText({
   placeholder = "",
   name = "",
   value = "",
+  type = "text",
   onChange,
   cssProp,
 }) {
@@ -89,6 +90,7 @@ function InputText({
       {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
       <Container error={error}>
         <StyledInput
+          type={type}
           value={value}
           name={name}
           placeholder={placeholder}
@@ -100,6 +102,14 @@ function InputText({
       {caption && <Caption error={error}>Caption test</Caption>}
     </FieldContainer>
   );
+}
+
+function InputText(props) {
+  return <Input {...props} type="text" />;
+}
+
+function InputDate(props) {
+  return <Input {...props} type="date" />;
 }
 
 function Select({
@@ -141,4 +151,4 @@ function Select({
   );
 }
 
-export { InputText, Select };
+export { InputText, Select, InputDate };
