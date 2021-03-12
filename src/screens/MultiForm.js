@@ -1,6 +1,8 @@
 import Steps from "../components/Steps";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { InputText, Select } from "../components/Inputs";
+import { CgExtensionRemove } from "react-icons/cg";
+import { MdDateRange } from "react-icons/md";
+import { InputText, Select, InputDate } from "../components/Inputs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
@@ -8,6 +10,7 @@ import { useReducer, useState } from "react";
 import { AvatarContainer } from "../components/CandidateCard";
 import { useHistory } from "react-router";
 import formReducer from "../reducers/formReducer";
+import { colors } from "../ui";
 
 const stepsData = ["Personal Information", "Avatar uploading"];
 
@@ -46,6 +49,19 @@ const SmallContent = styled.p`
   font-size: 12px;
   line-height: 15px;
 `;
+
+const ExperienceContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 256px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid ${colors.gray4};
+`;
+
+const FieldStep2Container = styled.div``;
 
 const fieldsStep1 = (state, handleChange) => {
   return (
@@ -86,8 +102,65 @@ const fieldsStep1 = (state, handleChange) => {
     </>
   );
 };
+const ExperienceCard = ({ state, handleChange }) => {
+  const calendarIcon = <MdDateRange style={{ color: colors.gray3 }} />;
+
+  const removeIcon = (
+    <CgExtensionRemove
+      style={{
+        cursor: "pointer",
+        position: "absolute",
+        top: "2px",
+        right: "2px",
+      }}
+    />
+  );
+  return (
+    <ExperienceContainer>
+      {removeIcon}
+      <InputText
+        label="Occupation"
+        placeholder="Backend Developer"
+        name="occupation"
+        value={state.occupation}
+        onChange={handleChange}
+      />
+      <InputText
+        label="Company"
+        placeholder="Some Company S.A."
+        name="company"
+        value={state.company}
+        onChange={handleChange}
+      />
+      <InputDate
+        label="Start date"
+        placeholder=""
+        name="startDate"
+        value={state.startDate}
+        onChange={handleChange}
+        icon={calendarIcon}
+      />
+      <InputDate
+        label="End date"
+        placeholder=""
+        name="endDate"
+        value={state.endDate}
+        onChange={handleChange}
+        icon={calendarIcon}
+      />
+    </ExperienceContainer>
+  );
+};
 
 const fieldsStep2 = (state, handleChange) => {
+  return (
+    <FieldStep2Container>
+      <ExperienceCard state={state} handleChange={handleChange} />
+    </FieldStep2Container>
+  );
+};
+
+const fieldsStep3 = (state, handleChange) => {
   return (
     <>
       <InputText
@@ -117,7 +190,7 @@ function MultiFrom({ onFormSubmit }) {
     name: "",
     country: { code: "" },
     profession: "",
-    experience: "",
+    experience: [],
     avatarUrl: "",
   });
 
