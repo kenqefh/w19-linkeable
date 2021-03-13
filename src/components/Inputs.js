@@ -84,6 +84,7 @@ function Input({
   type = "text",
   onChange,
   cssProp,
+  ...inputProps
 }) {
   return (
     <FieldContainer cssProp={cssProp}>
@@ -96,6 +97,7 @@ function Input({
           placeholder={placeholder}
           id={name}
           onChange={onChange}
+          {...inputProps}
         />
         {icon}
       </Container>
@@ -109,7 +111,11 @@ function InputText(props) {
 }
 
 function InputDate(props) {
-  return <Input {...props} type="date" />;
+  const now = new Date();
+  const maxDate = now.toISOString().substring(0, 10);
+  console.log(maxDate);
+
+  return <Input {...props} type="date" max={maxDate} />;
 }
 
 function Select({
