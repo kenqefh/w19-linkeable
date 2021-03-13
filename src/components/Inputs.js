@@ -73,7 +73,7 @@ const Caption = styled.span(
   `
 );
 
-function InputText({
+function Input({
   label = "",
   caption = "",
   icon,
@@ -81,25 +81,41 @@ function InputText({
   placeholder = "",
   name = "",
   value = "",
+  type = "text",
   onChange,
   cssProp,
+  ...inputProps
 }) {
   return (
     <FieldContainer cssProp={cssProp}>
       {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
       <Container error={error}>
         <StyledInput
+          type={type}
           value={value}
           name={name}
           placeholder={placeholder}
           id={name}
           onChange={onChange}
+          {...inputProps}
         />
         {icon}
       </Container>
       {caption && <Caption error={error}>Caption test</Caption>}
     </FieldContainer>
   );
+}
+
+function InputText(props) {
+  return <Input {...props} type="text" />;
+}
+
+function InputDate(props) {
+  const now = new Date();
+  const maxDate = now.toISOString().substring(0, 10);
+  console.log(maxDate);
+
+  return <Input {...props} type="date" max={maxDate} />;
 }
 
 function Select({
@@ -141,4 +157,4 @@ function Select({
   );
 }
 
-export { InputText, Select };
+export { InputText, Select, InputDate };
