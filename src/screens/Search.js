@@ -126,7 +126,16 @@ function Search({ candidates }) {
     const nameRegex = new RegExp(state.queryName, "i");
     const companyRegex = new RegExp(state.queryCompany, "i");
 
-    let { queryCountry, queryMaxExp, queryMinExp } = state;
+    let {
+      queryCountry,
+      queryMinExp,
+      queryMaxExp,
+      queryMinAge,
+      queryMaxAge,
+    } = state;
+
+    queryMinAge = parseInt(queryMinAge);
+    queryMaxAge = parseInt(queryMaxAge);
 
     function getExperienceCompanies(candidate) {
       return candidate.experience.map(({ company }) => company).join("\n");
@@ -142,17 +151,25 @@ function Search({ candidates }) {
       return Math.floor(accTime / 31556952000);
     }
 
+    const getYearsOld = (candidate) => {
+      let accTime = new Date() - new Date(candidate.birthday);
+      return accTime ? Math.floor(accTime / 31556952000) : 0;
+    };
+
     const filtered = candidates.filter((candidate) => {
       let yearOfExperience = getExperienceTime(candidate);
       let companies = getExperienceCompanies(candidate);
       let { name: nationality } = candidate.nationality;
+      let yearsOld = getYearsOld(candidate);
 
       return (
         nameRegex.test(candidate.name) &&
         companyRegex.test(companies) &&
         (queryMinExp ? yearOfExperience >= queryMinExp : true) &&
         (queryMaxExp ? yearOfExperience <= queryMaxExp : true) &&
-        (queryCountry.length ? queryCountry.includes(nationality) : true)
+        (queryCountry.length ? queryCountry.includes(nationality) : true) &&
+        (queryMinAge ? yearsOld >= queryMinAge : true) &&
+        (queryMaxAge ? yearsOld <= queryMaxAge : true)
       );
     });
     setFilteredCandidates(filtered);
@@ -255,6 +272,24 @@ function Search({ candidates }) {
               </span>
             ))}
           </CountriesContainer>
+
+          <InputNumberMinMax
+            label="Age"
+            min={{
+              label: "Min",
+              placeholder: "0",
+              name: "queryMinAge",
+              value: state.queryMinAge,
+              onChange: handleQueryChange,
+            }}
+            max={{
+              label: "Max",
+              placeholder: "0",
+              name: "queryMaxAge",
+              value: state.queryMaxAge,
+              onChange: handleQueryChange,
+            }}
+          />
         </AdvanceSearch>
       </SearchForm>
 
