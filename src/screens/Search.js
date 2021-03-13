@@ -2,7 +2,12 @@ import { useEffect, useState, useReducer } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
-import { InputNumberMinMax, Select, InputText } from "../components/Inputs";
+import {
+  InputNumberMinMax,
+  Select,
+  InputText,
+  MultipleOptions,
+} from "../components/Inputs";
 import CandidateList from "../components/CandidateList";
 import CircleButton from "../components/CircleButton";
 import { RiHome2Line } from "react-icons/ri";
@@ -82,6 +87,7 @@ const CountriesContainer = styled.div`
     border-radius: 8px;
     font-size: 10px;
     line-height: 12px;
+    margin: 2px 0;
 
     svg {
       cursor: pointer;
@@ -98,7 +104,7 @@ function Search({ candidates }) {
     queryCountry: ["Peru", "Mexico"],
     queryMinAge: "",
     queryMaxAge: "",
-    queryGender: "",
+    queryGender: [],
   });
   const [filteredCandidates, setFilteredCandidates] = useState(null);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -121,6 +127,14 @@ function Search({ candidates }) {
     if (value) dispatch({ type: "ADD_COUNTRY", payload: value });
   };
 
+  const handleGenderChange = (e) => {
+    const { checked, value } = e.target;
+    dispatch({
+      type: checked ? "ADD_GENDER" : "REMOVE_GENDER",
+      payload: value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const nameRegex = new RegExp(state.queryName, "i");
@@ -132,16 +146,17 @@ function Search({ candidates }) {
       queryMaxExp,
       queryMinAge,
       queryMaxAge,
+      queryGender,
     } = state;
 
     queryMinAge = parseInt(queryMinAge);
     queryMaxAge = parseInt(queryMaxAge);
 
-    function getExperienceCompanies(candidate) {
+    const getExperienceCompanies = (candidate) => {
       return candidate.experience.map(({ company }) => company).join("\n");
-    }
+    };
 
-    function getExperienceTime(candidate) {
+    const getExperienceTime = (candidate) => {
       let accTime = 0;
       candidate.experience.map(({ startDate, endDate }) => {
         const start = new Date(startDate);
@@ -149,11 +164,17 @@ function Search({ candidates }) {
         accTime += end - start || 0;
       });
       return Math.floor(accTime / 31556952000);
-    }
+    };
 
     const getYearsOld = (candidate) => {
       let accTime = new Date() - new Date(candidate.birthday);
       return accTime ? Math.floor(accTime / 31556952000) : 0;
+    };
+
+    const includesGender = (candidate) => {
+      let genderRegex = new RegExp(`^${candidate.gender}$`, "i");
+
+      return queryGender.some((qGender) => genderRegex.test(qGender));
     };
 
     const filtered = candidates.filter((candidate) => {
@@ -169,7 +190,8 @@ function Search({ candidates }) {
         (queryMaxExp ? yearOfExperience <= queryMaxExp : true) &&
         (queryCountry.length ? queryCountry.includes(nationality) : true) &&
         (queryMinAge ? yearsOld >= queryMinAge : true) &&
-        (queryMaxAge ? yearsOld <= queryMaxAge : true)
+        (queryMaxAge ? yearsOld <= queryMaxAge : true) &&
+        (queryGender.length ? includesGender(candidate) : true)
       );
     });
     setFilteredCandidates(filtered);
@@ -258,19 +280,23 @@ function Search({ candidates }) {
 
           <CountriesContainer>
             <p>Selected:</p>
-            {state.queryCountry.map((country) => (
-              <span key={country}>
-                {country}
-                <RiCloseCircleLine
-                  onClick={() =>
-                    dispatch({
-                      type: "REMOVE_COUNTRY",
-                      payload: { removeCountry: country },
-                    })
-                  }
-                />
-              </span>
-            ))}
+            {!state.queryCountry.length ? (
+              <span>All countries</span>
+            ) : (
+              state.queryCountry.map((country) => (
+                <span key={country}>
+                  {country}
+                  <RiCloseCircleLine
+                    onClick={() =>
+                      dispatch({
+                        type: "REMOVE_COUNTRY",
+                        payload: country,
+                      })
+                    }
+                  />
+                </span>
+              ))
+            )}
           </CountriesContainer>
 
           <InputNumberMinMax
@@ -289,6 +315,19 @@ function Search({ candidates }) {
               value: state.queryMaxAge,
               onChange: handleQueryChange,
             }}
+          />
+
+          <MultipleOptions
+            label="Gender"
+            name="queryGender"
+            value={state.queryGender}
+            onChange={handleGenderChange}
+            options={[
+              { value: "Male" },
+              { value: "Female" },
+              { value: "Other" },
+            ]}
+            type="checkbox"
           />
         </AdvanceSearch>
       </SearchForm>
