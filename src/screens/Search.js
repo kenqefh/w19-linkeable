@@ -22,6 +22,11 @@ import { useHistory } from "react-router";
 import AuthenticationSearch from "../components/AuthenticationSearch";
 import queryReducer from "../reducers/queryReducer";
 
+const SearchContainer = styled.div`
+  width: 100%;
+  margin-bottom: 72px;
+`;
+
 const SearchForm = styled.form`
   width: 296px;
 `;
@@ -49,10 +54,15 @@ const AdvanceSearch = styled.div(
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  left: 32px;
-  right: 32px;
-  bottom: 16px;
+  position: fixed;
+
+  width: 360px;
+  padding: 16px;
+  margin: auto;
+  background: ${colors.gray6};
+  left: 0;
+  right: 0;
+  bottom: 0;
 `;
 
 const FiltersContainer = styled.div`
@@ -218,7 +228,7 @@ function Search({ candidates }) {
   };
 
   return (
-    <div style={{ width: "100%" }}>
+    <SearchContainer>
       <SearchForm onSubmit={handleSubmit}>
         <MainSearch>
           <InputText
@@ -340,7 +350,7 @@ function Search({ candidates }) {
         </CircleButton>
         <AuthenticationSearch />
       </ButtonContainer>
-    </div>
+    </SearchContainer>
   );
 }
 
