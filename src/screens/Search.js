@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
-import { InputText } from "../components/Inputs";
+import { InputNumberMinMax, InputText } from "../components/Inputs";
 import CandidateList from "../components/CandidateList";
 import CircleButton from "../components/CircleButton";
 import { RiAddLine } from "react-icons/ri";
@@ -35,7 +35,7 @@ const MainSearch = styled.div`
 const AdvanceSearch = styled.div(
   ({ isOpen }) => `
   flex-direction: column;
-  gap: 40px;
+  gap: 4px;
   display: ${isOpen ? "flex" : "none"};
 `
 );
@@ -98,17 +98,32 @@ function Search({ candidates }) {
     e.preventDefault();
     const nameRegex = new RegExp(state.queryName, "i");
     const companyRegex = new RegExp(state.queryCompany, "i");
-    const filtered = candidates.filter(
-      (candidate) =>
+
+    function getExperienceCompanies(candidate) {
+      return candidate.experience.map(({ company }) => company).join("\n");
+    }
+
+    function getExperienceTime(candidate) {
+      let accTime = 0;
+      candidate.experience.map(({ startDate, endDate }) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        accTime += end - start || 0;
+      });
+      return Math.floor(accTime / 31556952000);
+    }
+
+    const filtered = candidates.filter((candidate) => {
+      let yearOfExperience = getExperienceTime(candidate);
+      let companies = getExperienceCompanies(candidate);
+
+      return (
         nameRegex.test(candidate.name) &&
-        companyRegex.test(
-          candidate.experience.map(({ company }) => company).join("\n")
-        )
-      //  &&
-      // parseInt(candidate.experience) >= state.queryMinExp &&
-      // parseInt(candidate.experience) <= (state.queryMaxExp || Infinity) &&
-      // state.queryCountry.includes(candidate.country.name)
-    );
+        companyRegex.test(companies) &&
+        yearOfExperience >= state.queryMinExp &&
+        yearOfExperience <= state.queryMaxExp
+      );
+    });
     setFilteredCandidates(filtered);
   };
 
@@ -151,6 +166,7 @@ function Search({ candidates }) {
         <FiltersContainer onClick={() => setAdvancedOpen(!advancedOpen)}>
           {moreFilter()}
         </FiltersContainer>
+
         <AdvanceSearch isOpen={advancedOpen}>
           <InputText
             label="Company"
@@ -160,6 +176,26 @@ function Search({ candidates }) {
             onChange={handleQueryChange}
             icon={<RiSearch2Line />}
           />
+
+          <InputNumberMinMax
+            label="Years of experience:"
+            min={{
+              label: "Min",
+              placeholder: "0",
+              name: "queryMinExp",
+              value: state.queryMinExp,
+              onChange: handleQueryChange,
+            }}
+            max={{
+              label: "Max",
+              placeholder: "0",
+              name: "queryMaxExp",
+              value: state.queryMaxExp,
+              onChange: handleQueryChange,
+            }}
+          />
+
+          {/*            
           <div>
             <p>Years of experience:</p>
             <div
@@ -216,6 +252,7 @@ function Search({ candidates }) {
               </span>
             ))}
           </div>
+          */}
         </AdvanceSearch>
       </SearchForm>
 
