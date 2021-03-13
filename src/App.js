@@ -3,18 +3,18 @@ import Search from "./screens/Search";
 import MultiForm from "./screens/MultiForm";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useState } from "react";
-import CandidateShow from "./components/CandidateShow";
 
 const initialCandidates = [
   {
     id: 161,
     name: "Jimon Jimonez",
-    phone: "",
+    phone: "123456789",
     gender: "male",
     birthday: "1980-12-31",
     nationality: { name: "Peru", code: "pe" },
-    bio: "",
-    profession: "",
+    bio:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
+    profession: "Developer",
     experience: [
       {
         ocupation: "Developer",
@@ -34,12 +34,13 @@ const initialCandidates = [
   {
     id: 172,
     name: "Xu Xiao",
-    phone: "",
+    phone: "123456789",
     gender: "female",
     birthday: "1990-12-31",
     nationality: { name: "Mexico", code: "mx" },
-    bio: "",
-    profession: "",
+    bio:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
+    profession: "Designer",
     experience: [
       {
         ocupation: "QA engineer",
@@ -53,12 +54,13 @@ const initialCandidates = [
   {
     id: 183,
     name: "Juan Lucas",
-    phone: "",
+    phone: "123456789",
     gender: "other",
     birthday: "2000-12-31",
     nationality: { name: "Peru", code: "pe" },
-    bio: "",
-    profession: "",
+    bio:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
+    profession: "Software Enginner",
     experience: [
       {
         ocupation: "Developer engineer",
@@ -72,12 +74,13 @@ const initialCandidates = [
   {
     id: 194,
     name: "Zilla Mendieta",
-    phone: "",
+    phone: "123456789",
     gender: "female",
     birthday: "1998-03-04",
     nationality: { name: "Peru", code: "pe" },
-    bio: "",
-    profession: "",
+    bio:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
+    profession: "Coach",
     experience: [
       {
         ocupation: "Designer",
@@ -97,12 +100,13 @@ const initialCandidates = [
   {
     id: 205,
     name: "Jamon Jamones",
-    phone: "",
+    phone: "123456789",
     gender: "male",
     birthday: "1879-12-31",
     nationality: { name: "Peru", code: "pe" },
-    bio: "",
-    profession: "",
+    bio:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
+    profession: "Artist",
     experience: [
       {
         ocupation: "Artist",

@@ -12,7 +12,7 @@ function CandidateList({ candidates }) {
   return (
     <ListContainer>
       {candidates.map((candidate) => (
-        <CandidateCard key={candidate.name} {...candidate} />
+        <CandidateCard key={candidate.id} {...candidate} />
       ))}
     </ListContainer>
   );
