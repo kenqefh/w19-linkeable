@@ -5,11 +5,11 @@ import Button from "../components/Button";
 import { InputText } from "../components/Inputs";
 import CandidateList from "../components/CandidateList";
 import CircleButton from "../components/CircleButton";
-import { RiAddLine } from "react-icons/ri";
 import { RiHome2Line } from "react-icons/ri";
 import { RiArrowDownSFill, RiSearch2Line } from "react-icons/ri";
 import { colors } from "../ui";
 import { useHistory } from "react-router";
+import AuthenticationSearch from "../components/AuthenticationSearch";
 import queryReducer from "../reducers/queryReducer";
 
 const SearchForm = styled.form``;
@@ -186,9 +186,7 @@ function Search({ candidates }) {
         <CircleButton onClick={handleHomeClick}>
           <RiHome2Line />
         </CircleButton>
-        <CircleButton>
-          <RiAddLine onClick={handleAddClick} />
-        </CircleButton>
+        <AuthenticationSearch/>
       </ButtonContainer>
     </div>
   );

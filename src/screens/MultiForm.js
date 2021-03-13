@@ -1,6 +1,6 @@
 import Steps from "../components/Steps";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { InputText, Select } from "../components/Inputs";
+import { InputText, Select, InputBirth, InputTextArea } from "../components/Inputs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
@@ -57,6 +57,20 @@ const fieldsStep1 = (state, handleChange) => {
         value={state.name}
         onChange={handleChange}
       />
+      <InputText
+        label="Phone"
+        placeholder="xxx-xxx-xxx"
+        name="phone"
+        value={state.phone}
+        onChange={handleChange}
+      />
+      <InputBirth
+        label="Birthay"
+        placeholder="Pick a date"
+        name="birth"
+        value={state.birth}
+        onChange={handleChange}
+      />
       <Select
         label="Nationality"
         placeholder="Select an option"
@@ -68,6 +82,13 @@ const fieldsStep1 = (state, handleChange) => {
           { value: "ve", text: "Venezuela" },
           { value: "mx", text: "Mexico" },
         ]}
+      />
+      <InputTextArea
+        label="Description"
+        placeholder="Tell us about you..."
+        name="description"
+        value={state.description}
+        onChange={handleChange}
       />
       <InputText
         label="Profession"

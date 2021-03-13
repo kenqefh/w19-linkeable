@@ -14,6 +14,18 @@ const StyledInput = styled.input`
   }
 `;
 
+const StyledTextArea = styled.textarea`
+  width: 100%;
+  border: none;
+  color: ${colors.gray2};
+  &:focus {
+    outline: none;
+  }
+  &::placeholder {
+    color: ${colors.gray5};
+  }
+`;
+
 const StyledSelect = styled.select`
   border: none;
   width: 100%;
@@ -141,4 +153,63 @@ function Select({
   );
 }
 
-export { InputText, Select };
+function InputBirth({
+  label = "",
+  caption = "",
+  icon,
+  error = false,
+  placeholder = "",
+  name = "",
+  value = "",
+  onChange,
+  cssProp,
+}) {
+  return (
+    <FieldContainer cssProp={cssProp}>
+      {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
+      <Container error={error}>
+        <StyledInput
+          type="date"
+          value={value}
+          name={name}
+          placeholder={placeholder}
+          id={name}
+          onChange={onChange}
+        />
+        {icon}
+      </Container>
+      {caption && <Caption error={error}>Caption test</Caption>}
+    </FieldContainer>
+  );
+}
+
+function InputTextArea({
+  label = "",
+  caption = "",
+  icon,
+  error = false,
+  placeholder = "",
+  name = "",
+  value = "",
+  onChange,
+  cssProp,
+}) {
+  return (
+    <FieldContainer cssProp={cssProp}>
+      {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
+      <Container error={error}>
+        <StyledTextArea
+          value={value}
+          name={name}
+          placeholder={placeholder}
+          id={name}
+          onChange={onChange}
+        />
+        {icon}
+      </Container>
+      {caption && <Caption error={error}>Caption test</Caption>}
+    </FieldContainer>
+  );
+}
+
+export { InputText, Select, InputBirth, InputTextArea };
