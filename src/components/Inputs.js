@@ -113,9 +113,37 @@ function InputText(props) {
 function InputDate(props) {
   const now = new Date();
   const maxDate = now.toISOString().substring(0, 10);
-  console.log(maxDate);
 
   return <Input {...props} type="date" max={maxDate} />;
+}
+
+const StyledInputNumberMinMax = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const MinMaxInputs = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
+
+function InputNumberMinMax({ label, min, max }) {
+  const cssProp = css`
+    flex-direction: row;
+    gap: 4px;
+  `;
+
+  return (
+    <StyledInputNumberMinMax>
+      <InputLabel>{label}</InputLabel>
+      <MinMaxInputs>
+        <Input {...min} type="number" cssProp={cssProp} min={0} max={1_000} />
+        <Input {...max} type="number" cssProp={cssProp} min={0} max={1_000} />
+      </MinMaxInputs>
+    </StyledInputNumberMinMax>
+  );
 }
 
 function Select({
@@ -157,4 +185,4 @@ function Select({
   );
 }
 
-export { InputText, Select, InputDate };
+export { InputText, Select, InputDate, InputNumberMinMax };
