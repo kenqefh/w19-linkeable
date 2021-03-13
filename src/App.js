@@ -3,6 +3,7 @@ import Search from "./screens/Search";
 import MultiForm from "./screens/MultiForm";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useState } from "react";
+import CandidateShow from "./components/CandidateShow";
 
 const initialCandidates = [
   {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/multiform">
           <MultiForm onFormSubmit={handleAddCandidate} />
         </Route>
+        <Route path="/show" component={CandidateShow}/>
         <Route path="/" component={Welcome} />
       </Switch>
     </Router>
