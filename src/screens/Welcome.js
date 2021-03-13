@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import logo from "../assets/linkeable-logo.png";
 import Button from "../components/Button";
+import AuthenticationButton from "../components/AuthenticationButton";
+import AuthenticationUser from "../components/AuthenticationUser";
 
 const Container = styled.div`
   display: flex;
@@ -38,10 +40,8 @@ function Welcome() {
       <Title>Welcome to...</Title>
       <Logo alt="Linkeable Logo" src={logo} />
       <ButtonContainer>
-        <Button size="large" onClick={handleGuest}>
-          Continue as Guest
-        </Button>
-        <Button size="large">Login</Button>
+        <Button onClick={handleGuest}><AuthenticationUser /></Button>
+        <AuthenticationButton />
       </ButtonContainer>
     </Container>
   );

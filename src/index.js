@@ -2,6 +2,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Global, css } from "@emotion/react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Auth0ProviderWithHistory from "./auth/auth0-provider-with-history";
 import App from "./App";
 import { colors } from "./ui";
 
@@ -39,7 +41,12 @@ const globalStyles = css`
 ReactDOM.render(
   <React.StrictMode>
     <Global styles={globalStyles} />
-    <App />
+      <Router>
+        <Auth0ProviderWithHistory>
+          <App />
+        </Auth0ProviderWithHistory>
+      </Router>,
   </React.StrictMode>,
   document.getElementById("root")
 );
+
