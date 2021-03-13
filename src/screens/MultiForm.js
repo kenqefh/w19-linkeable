@@ -12,7 +12,11 @@ import { useHistory } from "react-router";
 import formReducer from "../reducers/formReducer";
 import { colors } from "../ui";
 
-const stepsData = ["Personal Information", "Avatar uploading"];
+const stepsData = [
+  "Personal Information",
+  "Work experience",
+  "Avatar uploading",
+];
 
 const Header = styled.div`
   display: flex;
@@ -109,7 +113,7 @@ const fieldsStep1 = (state, handleChange) => {
     </>
   );
 };
-const ExperienceCard = ({ state, handleChange, removeExpe }) => {
+const ExperienceCard = ({ experience, handleChange, removeExp }) => {
   const calendarIcon = <MdDateRange style={{ color: colors.gray3 }} />;
 
   const removeIcon = (
@@ -120,9 +124,10 @@ const ExperienceCard = ({ state, handleChange, removeExpe }) => {
         top: "2px",
         right: "2px",
       }}
-      onClick={removeExpe}
+      onClick={removeExp}
     />
   );
+
   return (
     <ExperienceContainer>
       {removeIcon}
@@ -130,21 +135,21 @@ const ExperienceCard = ({ state, handleChange, removeExpe }) => {
         label="Occupation"
         placeholder="Backend Developer"
         name="occupation"
-        value={state.occupation}
+        value={experience.occupation}
         onChange={handleChange}
       />
       <InputText
         label="Company"
         placeholder="Some Company S.A."
         name="company"
-        value={state.company}
+        value={experience.company}
         onChange={handleChange}
       />
       <InputDate
         label="Start date"
         placeholder=""
         name="startDate"
-        value={state.startDate}
+        value={experience.startDate}
         onChange={handleChange}
         icon={calendarIcon}
       />
@@ -152,7 +157,7 @@ const ExperienceCard = ({ state, handleChange, removeExpe }) => {
         label="End date"
         placeholder=""
         name="endDate"
-        value={state.endDate}
+        value={experience.endDate}
         onChange={handleChange}
         icon={calendarIcon}
       />
@@ -160,7 +165,7 @@ const ExperienceCard = ({ state, handleChange, removeExpe }) => {
   );
 };
 
-const fieldsStep2 = (state, handleChange, dispatch) => {
+const fieldsStep2 = (state, handleChangeExp, dispatch) => {
   const removeExpe = (index) => {
     dispatch({ type: "REMOVE_EXPERIENCE", payload: index });
   };
@@ -170,9 +175,10 @@ const fieldsStep2 = (state, handleChange, dispatch) => {
       {state.experience.map((expe, index) => {
         return (
           <ExperienceCard
-            state={state}
-            handleChange={handleChange}
-            removeExpe={() => removeExpe(index)}
+            key={index}
+            experience={expe}
+            handleChange={(e) => handleChangeExp(e, index)}
+            removeExp={() => removeExpe(index)}
           />
         );
       })}
@@ -234,6 +240,14 @@ function MultiFrom({ onFormSubmit }) {
     dispatch({ type: "CHANGE_FIELD", payload: { name, value } });
   };
 
+  const handleChangeExperience = (e, index) => {
+    const { name, value } = e.target;
+    dispatch({
+      type: "CHANGE_FIELD_EXPERIENCE",
+      payload: { name, value, index },
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onFormSubmit(state);
@@ -257,7 +271,9 @@ function MultiFrom({ onFormSubmit }) {
       <Steps steps={stepsData} currentStep={currentStep} />
       <form onSubmit={handleSubmit}>
         {currentStep === 1 && fieldsStep1(state, handleChange)}
-        {currentStep === 2 && fieldsStep2(state, handleChange, dispatch)}
+        {currentStep === 2 &&
+          fieldsStep2(state, handleChangeExperience, dispatch)}
+        {currentStep === 3 && fieldsStep3(state, handleChange)}
       </form>
 
       {currentStep === 1 && (
