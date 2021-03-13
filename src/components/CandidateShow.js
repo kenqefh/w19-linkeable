@@ -91,20 +91,45 @@ const ButtonShow = styled.button`
   }
 `
 
+function Experience ({ocupation,company,startDate,endDate}){
+    return(
+        <div className="footer1">
+        <div>
+            <LabelShow>{ocupation}</LabelShow>
+            <ParagraphShow>{company}</ParagraphShow>
+            <ParagraphShow>{startDate}</ParagraphShow>
+            <ParagraphShow>{endDate}</ParagraphShow>
+        </div>
+
+        <div>
+            <LabelShow>0</LabelShow>
+        </div>
+    </div>
+    )
+}
+
 function CandidateShow({
 //   country,
 //   name,
   onclick,
-  profession = "no profession",
-  experience = "0",
+  ocupation = "no profession",
+  experience = [],
 //  avatarUrl,
   male = "Undefine",
   phone = "123",
   birthday = "00/00/00",
   bio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat",
   company = "no company",
-  date = "no date",
+  startDate = "2000-05-01",
+  endDate = "2000-05-01"
 }) {
+
+//   const date = (startDate,endDate) => {
+//       let newdate = new Date(startDate);
+//       let newdate2 = new Date(endDate);
+//       let result = newdate2 - newdate;
+//       return result;
+//   }
   return (
     
     <div>
@@ -139,16 +164,10 @@ function CandidateShow({
 
             <h2>Job Experience</h2>
 
-            <div className="footer1">
-                <div>
-                    <LabelShow>{profession}</LabelShow>
-                    <ParagraphShow>{company}</ParagraphShow>
-                    <ParagraphShow>{date}</ParagraphShow>
-                </div>
-
-                <div>
-                    <LabelShow>{experience}</LabelShow>
-                </div>
+            <div> 
+             {experience.map((exp)=> 
+               <Experience ocupation={exp.ocupation} company = {exp.company} startDate = {exp.startDate} endDate={exp.endDate} experience={experience}/> 
+             )}
             </div>
         </ShowFooter>
         <ButtonShow onClick={onclick}>

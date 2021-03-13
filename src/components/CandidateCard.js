@@ -73,12 +73,12 @@ const ButtonCard = styled.button`
 
 
 function CandidateCard({
-  country = { name: "Peru", code: "pe" },
-  name = "No name",
-  profession = "No Profession",
-  experience = 0,
-  avatarUrl,
-}) {
+   country = { name: "Peru", code: "pe" },
+   name = "No name",
+   profession = "No Profession",
+   experience = [""],
+   avatarUrl,
+} ) {
 
   const [show,setShow] = useState(false);
 
@@ -105,7 +105,7 @@ function CandidateCard({
       </div>
       {show && 
       <div className="card-body">
-        <CandidateShow onclick={()=>setShow(false)}/>
+        <CandidateShow  onclick={()=>setShow(false)}/>
       </div>}
     </Card>
   );
