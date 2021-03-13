@@ -196,11 +196,12 @@ function Select({
   caption = "",
   icon,
   error = false,
-  placeholder = "",
   name = "",
   value,
   options = [],
   onChange,
+  placeholder,
+  ...props
 }) {
   return (
     <FieldContainer>
@@ -208,17 +209,18 @@ function Select({
       <Container error={error}>
         <StyledSelect
           type="select"
-          value={value}
           name={name}
-          placeholder={placeholder}
           id={name}
           onChange={onChange}
+          {...props}
         >
-          <option disabled value="">
-            {placeholder}
-          </option>
+          {placeholder && (
+            <option disabled value="">
+              {placeholder}
+            </option>
+          )}
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.text + option.value} value={option.value}>
               {option.text}
             </option>
           ))}
