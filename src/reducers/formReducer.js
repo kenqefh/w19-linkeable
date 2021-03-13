@@ -24,6 +24,21 @@ const formReducer = (prevState, { type, payload }) => {
         experience: "",
         avatarUrl: "",
       };
+
+    case "ADD_EXPERIENCE":
+      return {
+        ...prevState,
+        experience: [...prevState.experience, {}],
+      };
+
+    case "REMOVE_EXPERIENCE":
+      return {
+        ...prevState,
+        experience: prevState.experience.filter(
+          (_, index) => payload !== index
+        ),
+      };
+
     default:
       throw new Error("Invalid action");
   }
