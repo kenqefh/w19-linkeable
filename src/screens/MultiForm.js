@@ -1,6 +1,9 @@
 import Steps from "../components/Steps";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { InputText, Select, InputBirth, InputTextArea } from "../components/Inputs";
+/* import { InputText, Select, InputBirth, InputTextArea } from "../components/Inputs";
+ */import { CgExtensionRemove } from "react-icons/cg";
+import { MdDateRange } from "react-icons/md";
+import { InputText, Select, InputDate, InputTextArea,  InputRadioButton} from "../components/Inputs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
@@ -8,8 +11,13 @@ import { useReducer, useState } from "react";
 import { AvatarContainer } from "../components/CandidateCard";
 import { useHistory } from "react-router";
 import formReducer from "../reducers/formReducer";
+import { colors } from "../ui";
 
-const stepsData = ["Personal Information", "Avatar uploading"];
+const stepsData = [
+  "Personal Information",
+  "Work experience",
+  "Avatar uploading",
+];
 
 const Header = styled.div`
   display: flex;
@@ -47,6 +55,28 @@ const SmallContent = styled.p`
   line-height: 15px;
 `;
 
+const ExperienceContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 256px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid ${colors.gray4};
+`;
+
+const FieldStep2Container = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  max-height: 400px;
+  overflow-y: scroll;
+  gap: 8px;
+  .button_container {
+    align-self: center;
+  }
+`;
+
 const fieldsStep1 = (state, handleChange) => {
   return (
     <>
@@ -64,9 +94,20 @@ const fieldsStep1 = (state, handleChange) => {
         value={state.phone}
         onChange={handleChange}
       />
-      <InputBirth
+      <InputRadioButton
+        label="Gender"
+        name="gender"
+        value={state.gender}
+        onChange={handleChange}
+        options={[
+          { value: "Male" },
+          { value: "Female" },
+          { value: "Other" },
+        ]}
+      />
+      <InputDate
         label="Birthay"
-        placeholder="Pick a date"
+        placeholder=""
         name="birth"
         value={state.birth}
         onChange={handleChange}
@@ -107,8 +148,96 @@ const fieldsStep1 = (state, handleChange) => {
     </>
   );
 };
+const ExperienceFormCard = ({ experience, handleChange, removeExp }) => {
+  const calendarIcon = <MdDateRange style={{ color: colors.gray3 }} />;
 
-const fieldsStep2 = (state, handleChange) => {
+  const removeIcon = (
+    <CgExtensionRemove
+      style={{
+        cursor: "pointer",
+        position: "absolute",
+        top: "2px",
+        right: "2px",
+      }}
+      onClick={removeExp}
+    />
+  );
+
+  return (
+    <ExperienceContainer>
+      {removeIcon}
+      <InputText
+        label="Occupation"
+        placeholder="Backend Developer"
+        name="occupation"
+        value={experience.occupation}
+        onChange={handleChange}
+      />
+      <InputText
+        label="Company"
+        placeholder="Some Company S.A."
+        name="company"
+        value={experience.company}
+        onChange={handleChange}
+      />
+      <InputDate
+        label="Start date"
+        placeholder=""
+        name="startDate"
+        value={experience.startDate}
+        onChange={handleChange}
+        icon={calendarIcon}
+      />
+      <InputDate
+        label="End date"
+        placeholder=""
+        name="endDate"
+        value={experience.endDate}
+        onChange={handleChange}
+        icon={calendarIcon}
+      />
+    </ExperienceContainer>
+  );
+};
+
+const fieldsStep2 = (state, handleChangeExp, dispatch) => {
+  const removeExpe = (index) => {
+    dispatch({ type: "REMOVE_EXPERIENCE", payload: index });
+  };
+
+  return (
+    <FieldStep2Container>
+      {state.experience.map((expe, index) => {
+        return (
+          
+          <ExperienceFormCard
+            key={index}
+            experience={expe}
+            handleChange={(e) => handleChangeExp(e, index)}
+            removeExp={() => removeExpe(index)}
+          />
+        );
+      })}
+
+      <div className="button_container">
+        <Button
+          size="small"
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch({ type: "ADD_EXPERIENCE" });
+          }}
+          children={
+            state.experience.length
+              ? "Add another experience"
+              : "Add experience"
+          }
+        />
+      </div>
+    </FieldStep2Container>
+  );
+};
+
+const fieldsStep3 = (state, handleChange) => {
   return (
     <>
       <InputText
@@ -138,13 +267,21 @@ function MultiFrom({ onFormSubmit }) {
     name: "",
     country: { code: "" },
     profession: "",
-    experience: "",
+    experience: [],
     avatarUrl: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch({ type: "CHANGE_FIELD", payload: { name, value } });
+  };
+
+  const handleChangeExperience = (e, index) => {
+    const { name, value } = e.target;
+    dispatch({
+      type: "CHANGE_FIELD_EXPERIENCE",
+      payload: { name, value, index },
+    });
   };
 
   const handleSubmit = (e) => {
@@ -170,7 +307,9 @@ function MultiFrom({ onFormSubmit }) {
       <Steps steps={stepsData} currentStep={currentStep} />
       <form onSubmit={handleSubmit}>
         {currentStep === 1 && fieldsStep1(state, handleChange)}
-        {currentStep === 2 && fieldsStep2(state, handleChange)}
+        {currentStep === 2 &&
+          fieldsStep2(state, handleChangeExperience, dispatch)}
+        {currentStep === 3 && fieldsStep3(state, handleChange)}
       </form>
 
       {currentStep === 1 && (
