@@ -67,7 +67,9 @@ const ExperienceContainer = styled.div`
 
 const FieldStep2Container = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  max-height: 400px;
+  overflow-y: scroll;
   gap: 8px;
   .button_container {
     align-self: center;
@@ -113,7 +115,7 @@ const fieldsStep1 = (state, handleChange) => {
     </>
   );
 };
-const ExperienceCard = ({ experience, handleChange, removeExp }) => {
+const ExperienceFormCard = ({ experience, handleChange, removeExp }) => {
   const calendarIcon = <MdDateRange style={{ color: colors.gray3 }} />;
 
   const removeIcon = (
@@ -174,7 +176,7 @@ const fieldsStep2 = (state, handleChangeExp, dispatch) => {
     <FieldStep2Container>
       {state.experience.map((expe, index) => {
         return (
-          <ExperienceCard
+          <ExperienceFormCard
             key={index}
             experience={expe}
             handleChange={(e) => handleChangeExp(e, index)}
