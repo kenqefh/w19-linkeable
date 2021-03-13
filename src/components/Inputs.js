@@ -280,7 +280,7 @@ function InputRadioButton({
         onChange={onChange}
       >
         {options.map((option) => (
-          <RadioButton>
+          <RadioButton key={option.value}>
             <input
               type="radio"
               id={option.value}

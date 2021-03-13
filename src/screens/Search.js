@@ -262,7 +262,7 @@ function Search({ candidates }) {
         <CircleButton onClick={handleHomeClick}>
           <RiHome2Line />
         </CircleButton>
-        <AuthenticationSearch/>
+        <AuthenticationSearch />
       </ButtonContainer>
     </div>
   );
