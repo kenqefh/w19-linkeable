@@ -1,8 +1,9 @@
 import Steps from "../components/Steps";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { CgExtensionRemove } from "react-icons/cg";
+/* import { InputText, Select, InputBirth, InputTextArea } from "../components/Inputs";
+ */import { CgExtensionRemove } from "react-icons/cg";
 import { MdDateRange } from "react-icons/md";
-import { InputText, Select, InputDate } from "../components/Inputs";
+import { InputText, Select, InputDate, InputTextArea,  InputRadioButton} from "../components/Inputs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
@@ -86,6 +87,31 @@ const fieldsStep1 = (state, handleChange) => {
         value={state.name}
         onChange={handleChange}
       />
+      <InputText
+        label="Phone"
+        placeholder="xxx-xxx-xxx"
+        name="phone"
+        value={state.phone}
+        onChange={handleChange}
+      />
+      <InputRadioButton
+        label="Gender"
+        name="gender"
+        value={state.gender}
+        onChange={handleChange}
+        options={[
+          { value: "Male" },
+          { value: "Female" },
+          { value: "Other" },
+        ]}
+      />
+      <InputDate
+        label="Birthay"
+        placeholder=""
+        name="birth"
+        value={state.birth}
+        onChange={handleChange}
+      />
       <Select
         label="Nationality"
         placeholder="Select an option"
@@ -97,6 +123,13 @@ const fieldsStep1 = (state, handleChange) => {
           { value: "ve", text: "Venezuela" },
           { value: "mx", text: "Mexico" },
         ]}
+      />
+      <InputTextArea
+        label="Description"
+        placeholder="Tell us about you..."
+        name="description"
+        value={state.description}
+        onChange={handleChange}
       />
       <InputText
         label="Profession"
@@ -176,6 +209,7 @@ const fieldsStep2 = (state, handleChangeExp, dispatch) => {
     <FieldStep2Container>
       {state.experience.map((expe, index) => {
         return (
+          
           <ExperienceFormCard
             key={index}
             experience={expe}
