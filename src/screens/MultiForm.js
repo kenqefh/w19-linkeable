@@ -61,7 +61,14 @@ const ExperienceContainer = styled.div`
   border: 1px solid ${colors.gray4};
 `;
 
-const FieldStep2Container = styled.div``;
+const FieldStep2Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  .button_container {
+    align-self: center;
+  }
+`;
 
 const fieldsStep1 = (state, handleChange) => {
   return (
@@ -102,7 +109,7 @@ const fieldsStep1 = (state, handleChange) => {
     </>
   );
 };
-const ExperienceCard = ({ state, handleChange }) => {
+const ExperienceCard = ({ state, handleChange, removeExpe }) => {
   const calendarIcon = <MdDateRange style={{ color: colors.gray3 }} />;
 
   const removeIcon = (
@@ -113,6 +120,7 @@ const ExperienceCard = ({ state, handleChange }) => {
         top: "2px",
         right: "2px",
       }}
+      onClick={removeExpe}
     />
   );
   return (
@@ -152,10 +160,37 @@ const ExperienceCard = ({ state, handleChange }) => {
   );
 };
 
-const fieldsStep2 = (state, handleChange) => {
+const fieldsStep2 = (state, handleChange, dispatch) => {
+  const removeExpe = (index) => {
+    dispatch({ type: "REMOVE_EXPERIENCE", payload: index });
+  };
+
   return (
     <FieldStep2Container>
-      <ExperienceCard state={state} handleChange={handleChange} />
+      {state.experience.map((expe, index) => {
+        return (
+          <ExperienceCard
+            state={state}
+            handleChange={handleChange}
+            removeExpe={() => removeExpe(index)}
+          />
+        );
+      })}
+
+      <div className="button_container">
+        <Button
+          size="small"
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch({ type: "ADD_EXPERIENCE" });
+          }}
+          children={
+            state.experience.length
+              ? "Add another experience"
+              : "Add experience"
+          }
+        />
+      </div>
     </FieldStep2Container>
   );
 };
@@ -222,7 +257,7 @@ function MultiFrom({ onFormSubmit }) {
       <Steps steps={stepsData} currentStep={currentStep} />
       <form onSubmit={handleSubmit}>
         {currentStep === 1 && fieldsStep1(state, handleChange)}
-        {currentStep === 2 && fieldsStep2(state, handleChange)}
+        {currentStep === 2 && fieldsStep2(state, handleChange, dispatch)}
       </form>
 
       {currentStep === 1 && (
