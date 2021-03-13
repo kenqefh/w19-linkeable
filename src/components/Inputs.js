@@ -24,6 +24,10 @@ const StyledRadioGroup = styled.div`
   margin-top: 4px;
 `;
 
+const StyledGroup = styled(StyledRadioGroup)`
+  justify-content: flex-start;
+`;
+
 const LabelRadio = styled.label`
   color: ${colors.gray2};
   padding: 8px 12px;
@@ -108,6 +112,10 @@ const FieldContainer = styled.div(
 const InputLabel = styled.label`
   font-size: 14px;
   line-height: 17px;
+`;
+
+const InputLabelGray = styled(InputLabel)`
+  color: ${colors.gray4};
 `;
 
 const Caption = styled.span(
@@ -298,6 +306,42 @@ function InputRadioButton({
   );
 }
 
+function MultipleOptions({
+  label = "",
+  value,
+  role,
+  name,
+  id,
+  options = [],
+  onChange,
+  cssProp,
+  ...inputProps
+}) {
+  return (
+    <FieldContainer cssProp={cssProp}>
+      {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
+      <div style={{ alignSelf: "start" }}>
+        <StyledGroup>
+          {options.map((option) => (
+            <RadioButton key={option.value}>
+              <input
+                onChange={onChange}
+                type="checkbox"
+                id={option.value}
+                name={name}
+                key={option.value}
+                value={option.value}
+                {...inputProps}
+              />
+              <LabelRadio htmlFor={option.value}>{option.value}</LabelRadio>
+            </RadioButton>
+          ))}
+        </StyledGroup>
+      </div>
+      <InputLabelGray>Chose one or more</InputLabelGray>
+    </FieldContainer>
+  );
+}
 export {
   InputText,
   Select,
@@ -305,4 +349,5 @@ export {
   InputTextArea,
   InputRadioButton,
   InputNumberMinMax,
+  MultipleOptions,
 };
