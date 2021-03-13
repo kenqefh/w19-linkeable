@@ -36,7 +36,7 @@ const initialCandidates = [
     phone: "",
     gender: "female",
     birthday: "1990-12-31",
-    nationality: { name: "Colombia", code: "co" },
+    nationality: { name: "Mexico", code: "mx" },
     bio: "",
     profession: "",
     experience: [

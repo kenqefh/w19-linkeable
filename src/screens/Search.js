@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
-import { InputNumberMinMax, InputText } from "../components/Inputs";
+import { InputNumberMinMax, Select, InputText } from "../components/Inputs";
 import CandidateList from "../components/CandidateList";
 import CircleButton from "../components/CircleButton";
 import { RiHome2Line } from "react-icons/ri";
@@ -10,6 +10,7 @@ import {
   RiArrowDownSFill,
   RiArrowUpSFill,
   RiSearch2Line,
+  RiCloseCircleLine,
 } from "react-icons/ri";
 import { colors } from "../ui";
 import { useHistory } from "react-router";
@@ -61,6 +62,32 @@ const FiltersContainer = styled.div`
   color: ${colors.gray3};
 `;
 
+const CountriesContainer = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  font-size: 14px;
+  line-height: 17px;
+
+  span {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    color: ${colors.white};
+    background: ${colors.gray1};
+
+    padding: 3px 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    line-height: 12px;
+
+    svg {
+      cursor: pointer;
+    }
+  }
+`;
 function Search({ candidates }) {
   const history = useHistory();
   const [state, dispatch] = useReducer(queryReducer, {
@@ -91,13 +118,15 @@ function Search({ candidates }) {
 
   const handleCountryChange = (e) => {
     const { value } = e.target;
-    dispatch({ type: "ADD_COUNTRY", payload: value });
+    if (value) dispatch({ type: "ADD_COUNTRY", payload: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const nameRegex = new RegExp(state.queryName, "i");
     const companyRegex = new RegExp(state.queryCompany, "i");
+
+    let { queryCountry, queryMaxExp, queryMinExp } = state;
 
     function getExperienceCompanies(candidate) {
       return candidate.experience.map(({ company }) => company).join("\n");
@@ -116,12 +145,14 @@ function Search({ candidates }) {
     const filtered = candidates.filter((candidate) => {
       let yearOfExperience = getExperienceTime(candidate);
       let companies = getExperienceCompanies(candidate);
+      let { name: nationality } = candidate.nationality;
 
       return (
         nameRegex.test(candidate.name) &&
         companyRegex.test(companies) &&
-        yearOfExperience >= state.queryMinExp &&
-        yearOfExperience <= state.queryMaxExp
+        (queryMinExp ? yearOfExperience >= queryMinExp : true) &&
+        (queryMaxExp ? yearOfExperience <= queryMaxExp : true) &&
+        (queryCountry.length ? queryCountry.includes(nationality) : true)
       );
     });
     setFilteredCandidates(filtered);
@@ -195,64 +226,35 @@ function Search({ candidates }) {
             }}
           />
 
-          {/*            
-          <div>
-            <p>Years of experience:</p>
-            <div
-              style={{
-                display: "flex",
-                width: "100%",
-                gap: "4px",
-                marginTop: "4px",
-              }}
-            >
-              <InputText
-                label="min"
-                placeholder="0"
-                name="queryMinExp"
-                value={state.queryMinExp}
-                onChange={handleQueryChange}
-                cssProp={css`
-                  flex-direction: row;
-                  align-items: center;
-                  width: 100px;
-                `}
-              />
-              <InputText
-                label="max"
-                placeholder="0"
-                name="queryMaxExp"
-                value={state.queryMaxExp}
-                onChange={handleQueryChange}
-                cssProp={css`
-                  flex-direction: row;
-                  align-items: center;
-                  width: 100px;
-                `}
-              />
-            </div>
-            <select onChange={handleCountryChange}>
-              <option value="">Select an option</option>
-              <option value="Peru">Peru</option>
-              <option value="Mexico">Mexico</option>
-              <option value="Venezuela">Venezuela</option>
-            </select>
-            <span>Selected:</span>
-            {state.queryCountry.map((c, i) => (
-              <span
-                key={i}
-                onClick={() =>
-                  dispatch({
-                    type: "REMOVE_COUNTRY",
-                    payload: { removeCountry: c },
-                  })
-                }
-              >
-                {c}
+          <Select
+            label="Country"
+            name="country"
+            onChange={handleCountryChange}
+            options={[
+              { value: "", text: "Select a country" },
+              { value: "Peru", text: "Peru" },
+              { value: "Venezuela", text: "Venezuela" },
+              { value: "Mexico", text: "Mexico" },
+            ]}
+            style={{ background: "white" }}
+          />
+
+          <CountriesContainer>
+            <p>Selected:</p>
+            {state.queryCountry.map((country) => (
+              <span key={country}>
+                {country}
+                <RiCloseCircleLine
+                  onClick={() =>
+                    dispatch({
+                      type: "REMOVE_COUNTRY",
+                      payload: { removeCountry: country },
+                    })
+                  }
+                />
               </span>
             ))}
-          </div>
-          */}
+          </CountriesContainer>
         </AdvanceSearch>
       </SearchForm>
 
