@@ -39,6 +39,16 @@ const formReducer = (prevState, { type, payload }) => {
         ),
       };
 
+    case "CHANGE_FIELD_EXPERIENCE":
+      return {
+        ...prevState,
+        experience: prevState.experience.map((exp, index) =>
+          payload.index !== index
+            ? exp
+            : { ...exp, [payload.name]: payload.value }
+        ),
+      };
+
     default:
       throw new Error("Invalid action");
   }
