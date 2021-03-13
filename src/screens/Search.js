@@ -7,24 +7,35 @@ import CandidateList from "../components/CandidateList";
 import CircleButton from "../components/CircleButton";
 import { RiAddLine } from "react-icons/ri";
 import { RiHome2Line } from "react-icons/ri";
-import { RiArrowDownSFill, RiSearch2Line } from "react-icons/ri";
+import {
+  RiArrowDownSFill,
+  RiArrowUpSFill,
+  RiSearch2Line,
+} from "react-icons/ri";
 import { colors } from "../ui";
 import { useHistory } from "react-router";
 import queryReducer from "../reducers/queryReducer";
 
-const SearchForm = styled.form``;
+const SearchForm = styled.form`
+  width: 296px;
+`;
 
 const MainSearch = styled.div`
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
   gap: 8px;
   height: fit-content;
+
+  & input {
+    flex-grow: 10;
+  }
 `;
 
 const AdvanceSearch = styled.div(
   ({ isOpen }) => `
   flex-direction: column;
-  gap: 8px;
+  gap: 40px;
   display: ${isOpen ? "flex" : "none"};
 `
 );
@@ -40,7 +51,9 @@ const ButtonContainer = styled.div`
 
 const FiltersContainer = styled.div`
   margin-top: 16px;
+  margin-bottom: 12px;
   display: flex;
+  align-items: center;
   gap: 4px;
   font-size: 14px;
   line-height: 17px;
@@ -52,10 +65,13 @@ function Search({ candidates }) {
   const history = useHistory();
   const [state, dispatch] = useReducer(queryReducer, {
     queryName: "",
-    queryProfession: "",
+    queryCompany: "",
     queryMinExp: "",
     queryMaxExp: "",
     queryCountry: ["Peru", "Mexico"],
+    queryMinAge: "",
+    queryMaxAge: "",
+    queryGender: "",
   });
   const [filteredCandidates, setFilteredCandidates] = useState(null);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -81,14 +97,17 @@ function Search({ candidates }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const nameRegex = new RegExp(state.queryName, "i");
-    const professionRegex = new RegExp(state.queryProfession, "i");
+    const companyRegex = new RegExp(state.queryCompany, "i");
     const filtered = candidates.filter(
       (candidate) =>
         nameRegex.test(candidate.name) &&
-        professionRegex.test(candidate.profession) &&
-        parseInt(candidate.experience) >= state.queryMinExp &&
-        parseInt(candidate.experience) <= (state.queryMaxExp || Infinity) &&
-        state.queryCountry.includes(candidate.country.name)
+        companyRegex.test(
+          candidate.experience.map(({ company }) => company).join("\n")
+        )
+      //  &&
+      // parseInt(candidate.experience) >= state.queryMinExp &&
+      // parseInt(candidate.experience) <= (state.queryMaxExp || Infinity) &&
+      // state.queryCountry.includes(candidate.country.name)
     );
     setFilteredCandidates(filtered);
   };
@@ -97,8 +116,24 @@ function Search({ candidates }) {
     if (!state.queryName) setFilteredCandidates(null);
   }, [state.queryName]);
 
+  const moreFilter = () => {
+    if (advancedOpen)
+      return (
+        <>
+          <p>Less filters</p>
+          <RiArrowUpSFill />
+        </>
+      );
+    return (
+      <>
+        <p>More filters</p>
+        <RiArrowDownSFill />
+      </>
+    );
+  };
+
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <SearchForm onSubmit={handleSubmit}>
         <MainSearch>
           <InputText
@@ -107,19 +142,21 @@ function Search({ candidates }) {
             name="queryName"
             value={state.queryName}
             onChange={handleQueryChange}
+            cssProp={css`
+              width: 100%;
+            `}
           />
           <Button size="medium">Search</Button>
         </MainSearch>
         <FiltersContainer onClick={() => setAdvancedOpen(!advancedOpen)}>
-          <p>More filters</p>
-          <RiArrowDownSFill />
+          {moreFilter()}
         </FiltersContainer>
         <AdvanceSearch isOpen={advancedOpen}>
           <InputText
-            label="Profession"
+            label="Company"
             placeholder="query"
-            name="queryProfession"
-            value={state.queryProfession}
+            name="queryCompany"
+            value={state.queryCompany}
             onChange={handleQueryChange}
             icon={<RiSearch2Line />}
           />
@@ -181,7 +218,9 @@ function Search({ candidates }) {
           </div>
         </AdvanceSearch>
       </SearchForm>
+
       <CandidateList candidates={filteredCandidates || candidates} />
+
       <ButtonContainer>
         <CircleButton onClick={handleHomeClick}>
           <RiHome2Line />
