@@ -24,7 +24,11 @@ const StyledRadioGroup = styled.div`
   margin-top: 4px;
 `;
 
-const LabelRadio = styled.label `
+const StyledGroup = styled(StyledRadioGroup)`
+  justify-content: flex-start;
+`;
+
+const LabelRadio = styled.label`
   color: ${colors.gray2};
   padding: 8px 12px;
   font-weight: 400;
@@ -110,6 +114,10 @@ const InputLabel = styled.label`
   line-height: 17px;
 `;
 
+const InputLabelGray = styled(InputLabel)`
+  color: ${colors.gray4};
+`;
+
 const Caption = styled.span(
   (props) => css`
     font-size: 14px;
@@ -158,9 +166,37 @@ function InputText(props) {
 function InputDate(props) {
   const now = new Date();
   const maxDate = now.toISOString().substring(0, 10);
-  console.log(maxDate);
 
   return <Input {...props} type="date" max={maxDate} />;
+}
+
+const StyledInputNumberMinMax = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const MinMaxInputs = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
+
+function InputNumberMinMax({ label, min, max }) {
+  const cssProp = css`
+    flex-direction: row;
+    gap: 4px;
+  `;
+
+  return (
+    <StyledInputNumberMinMax>
+      <InputLabel>{label}</InputLabel>
+      <MinMaxInputs>
+        <Input {...min} type="number" cssProp={cssProp} min={0} max={1_000} />
+        <Input {...max} type="number" cssProp={cssProp} min={0} max={1_000} />
+      </MinMaxInputs>
+    </StyledInputNumberMinMax>
+  );
 }
 
 function Select({
@@ -168,11 +204,12 @@ function Select({
   caption = "",
   icon,
   error = false,
-  placeholder = "",
   name = "",
   value,
   options = [],
   onChange,
+  placeholder,
+  ...props
 }) {
   return (
     <FieldContainer>
@@ -180,17 +217,18 @@ function Select({
       <Container error={error}>
         <StyledSelect
           type="select"
-          value={value}
           name={name}
-          placeholder={placeholder}
           id={name}
           onChange={onChange}
+          {...props}
         >
-          <option disabled value="">
-            {placeholder}
-          </option>
+          {placeholder && (
+            <option disabled value="">
+              {placeholder}
+            </option>
+          )}
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.text + option.value} value={option.value}>
               {option.text}
             </option>
           ))}
@@ -244,28 +282,72 @@ function InputRadioButton({
   return (
     <FieldContainer cssProp={cssProp}>
       {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
-        <StyledRadioGroup
-          value={value}
-          role="group"
-          name={name}
-          id={name}
-          onChange={onChange}
-        >
-          {options.map((option) => (
-            <RadioButton>
-              <input
-                type="radio"
-                id={option.value}
-                name="gender"
-                key={option.value}
-                value={option.value}
-              />
-              <LabelRadio htmlFor={option.value}>{option.value}</LabelRadio>
-            </RadioButton>
-          ))}
-        </StyledRadioGroup> 
+      <StyledRadioGroup
+        value={value}
+        role="group"
+        name={name}
+        id={name}
+        onChange={onChange}
+      >
+        {options.map((option) => (
+          <RadioButton key={option.value}>
+            <input
+              type="radio"
+              id={option.value}
+              name="gender"
+              key={option.value}
+              value={option.value}
+            />
+            <LabelRadio htmlFor={option.value}>{option.value}</LabelRadio>
+          </RadioButton>
+        ))}
+      </StyledRadioGroup>
     </FieldContainer>
   );
 }
 
-export { InputText, Select, InputDate, InputTextArea,  InputRadioButton };
+function MultipleOptions({
+  label = "",
+  value,
+  role,
+  name,
+  id,
+  options = [],
+  onChange,
+  cssProp,
+  ...inputProps
+}) {
+  return (
+    <FieldContainer cssProp={cssProp}>
+      {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
+      <div style={{ alignSelf: "start" }}>
+        <StyledGroup>
+          {options.map((option) => (
+            <RadioButton key={option.value}>
+              <input
+                onChange={onChange}
+                type="checkbox"
+                id={option.value}
+                name={name}
+                key={option.value}
+                value={option.value}
+                {...inputProps}
+              />
+              <LabelRadio htmlFor={option.value}>{option.value}</LabelRadio>
+            </RadioButton>
+          ))}
+        </StyledGroup>
+      </div>
+      <InputLabelGray>Chose one or more</InputLabelGray>
+    </FieldContainer>
+  );
+}
+export {
+  InputText,
+  Select,
+  InputDate,
+  InputTextArea,
+  InputRadioButton,
+  InputNumberMinMax,
+  MultipleOptions,
+};

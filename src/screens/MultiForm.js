@@ -1,9 +1,15 @@
 import Steps from "../components/Steps";
 import { RiCloseCircleLine } from "react-icons/ri";
 /* import { InputText, Select, InputBirth, InputTextArea } from "../components/Inputs";
- */import { CgExtensionRemove } from "react-icons/cg";
+ */ import { CgExtensionRemove } from "react-icons/cg";
 import { MdDateRange } from "react-icons/md";
-import { InputText, Select, InputDate, InputTextArea,  InputRadioButton} from "../components/Inputs";
+import {
+  InputText,
+  Select,
+  InputDate,
+  InputTextArea,
+  InputRadioButton,
+} from "../components/Inputs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Button from "../components/Button";
@@ -99,17 +105,13 @@ const fieldsStep1 = (state, handleChange) => {
         name="gender"
         value={state.gender}
         onChange={handleChange}
-        options={[
-          { value: "Male" },
-          { value: "Female" },
-          { value: "Other" },
-        ]}
+        options={[{ value: "Male" }, { value: "Female" }, { value: "Other" }]}
       />
       <InputDate
-        label="Birthay"
+        label="Birthday"
         placeholder=""
-        name="birth"
-        value={state.birth}
+        name="birthday"
+        value={state.birthday}
         onChange={handleChange}
       />
       <Select
@@ -209,7 +211,6 @@ const fieldsStep2 = (state, handleChangeExp, dispatch) => {
     <FieldStep2Container>
       {state.experience.map((expe, index) => {
         return (
-          
           <ExperienceFormCard
             key={index}
             experience={expe}
@@ -269,6 +270,7 @@ function MultiFrom({ onFormSubmit }) {
     profession: "",
     experience: [],
     avatarUrl: "",
+    birthday: "",
   });
 
   const handleChange = (e) => {

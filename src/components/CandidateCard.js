@@ -7,7 +7,7 @@ import { RiArrowDownSFill } from "react-icons/ri";
 
 const Card = styled.div`
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 8px;
   padding: 8px;
   background: ${colors.white};
@@ -15,8 +15,8 @@ const Card = styled.div`
   box-sizing: border-box;
   box-shadow: 2px 2px 0px ${colors.gray4};
   border-radius: 8px;
-  & .card-header{
-    display:flex;
+  & .card-header {
+    display: flex;
   }
 `;
 
@@ -38,7 +38,7 @@ const AvatarContainer = styled.div(
 const Information = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left:10px;
+  margin-left: 10px;
   gap: 4px;
   & > h4,
   span {
@@ -59,28 +59,35 @@ const InfoHeader = styled.div`
 `;
 
 const ButtonCard = styled.button`
-  width:12px;
-  heigth:6px;
-  background-color:transparent;
-  border:none;
-  cursor:pointer;
-  font-size:20px;
-  margin:40px 0px 0px 40px;
+  width: 12px;
+  heigth: 6px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 40px 0px 0px 40px;
   &:focus {
-    outline:none;
+    outline: none;
   }
-`
-
+`;
 
 function CandidateCard({
-   country = { name: "Peru", code: "pe" },
-   name = "No name",
-   profession = "No Profession",
-   experience = [""],
-   avatarUrl,
-} ) {
+  nationality,
+  name,
+  profession,
+  experience,
+  avatarUrl,
+  ...props
+}) {
+  const [show, setShow] = useState(false);
 
-  const [show,setShow] = useState(false);
+  let experienceTime = 0;
+  experience.map(({ startDate, endDate }) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    experienceTime += end - start || 0;
+  });
+  const expYears = Math.floor(experienceTime / 31556952000);
 
   return (
     <Card>
@@ -89,24 +96,30 @@ function CandidateCard({
         <Information>
           <InfoHeader>
             <img
-              src={`/assets/32x32/${country.code}.png`}
+              src={`/assets/32x32/${nationality.code}.png`}
               width="14px"
               alt="flag"
             />
             <h3>{name}</h3>
           </InfoHeader>
           <h4>{profession}</h4>
-          <span>{`${experience} years of experience`}</span>
+          <span>{`${expYears} years of experience`}</span>
         </Information>
-        {!show &&
-            <ButtonCard onClick={()=>setShow(true)}>
-              <RiArrowDownSFill/>
-            </ButtonCard>}
+        {!show && (
+          <ButtonCard onClick={() => setShow(true)}>
+            <RiArrowDownSFill />
+          </ButtonCard>
+        )}
       </div>
-      {show && 
-      <div className="card-body">
-        <CandidateShow  onclick={()=>setShow(false)}/>
-      </div>}
+      {show && (
+        <div className="card-body">
+          <CandidateShow
+            onclick={() => setShow(false)}
+            experience={experience}
+            {...props}
+          />
+        </div>
+      )}
     </Card>
   );
 }
